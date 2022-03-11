@@ -86,6 +86,18 @@ const loadSaved = async () => {
   photos.value = photosInStorage;
 };
 
+// Delete photos
+const deletePhoto = async (photo: UserPhoto) => {
+  // Remove the photo from the array
+  photos.value = photos.value.filter((p) => p.filepath !== photo.filepath);
+
+  // Delete the file from the file system
+  const filename = photo.filepath.substr(photo.filepath.lastIndexOf('/') + 1);
+  await Filesystem.deleteFile({
+    path: filename,
+    directory: Directory.Data,
+  });
+};
 
 export function usePhotoGallery() {
   onMounted(loadSaved);
@@ -105,6 +117,7 @@ export function usePhotoGallery() {
   return {
     photos,
     takePhoto,
+    deletePhoto,
   };
 }
 
